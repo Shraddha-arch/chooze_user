@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "563924281350",
+    "project_id": "choozeuser",
+    "storage_bucket": "choozeuser.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563924281350:android:0587a17c3950007d93fb87",
+        "android_client_info": {
+          "package_name": "com.chooze.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563924281350-64iafs2hk74poc5hhcq3mlth1k7r5g0s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGiw1OuiwOLwLUMrJYNjiTBtptr70OXa8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563924281350-64iafs2hk74poc5hhcq3mlth1k7r5g0s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
