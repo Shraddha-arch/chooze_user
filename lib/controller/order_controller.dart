@@ -79,30 +79,30 @@ class OrderController extends GetxController implements GetxService {
   int get runningOrderIndex => _runningOrderIndex;
   int get deliverySelectIndex => _deliverySelectIndex;
 
-  void selectDelivery(int index){
+  void selectDelivery(int index) {
     _deliverySelectIndex = index;
     update();
   }
 
-
-  void closeRunningOrder(bool isUpdate){
+  void closeRunningOrder(bool isUpdate) {
     _isRunningOrderViewShow = !_isRunningOrderViewShow;
-    if(isUpdate){
+    if (isUpdate) {
       update();
     }
   }
 
-  void addTips(double tips){
+  void addTips(double tips) {
     _tips = tips;
     update();
   }
 
-  Future<void> getRunningOrders(int offset, {bool notify = true, bool fromHome = false}) async {
-    if(offset == 1) {
+  Future<void> getRunningOrders(int offset,
+      {bool notify = true, bool fromHome = false}) async {
+    if (offset == 1) {
       _runningOffsetList = [];
       _runningOffset = 1;
       _runningOrderList = null;
-      if(notify) {
+      if (notify) {
         update();
       }
     }
@@ -113,10 +113,12 @@ class OrderController extends GetxController implements GetxService {
         if (offset == 1) {
           _runningOrderList = [];
         }
-        _runningOrderList.addAll(PaginatedOrderModel.fromJson(response.body).orders);
-        _runningPageSize = PaginatedOrderModel.fromJson(response.body).totalSize;
+        _runningOrderList
+            .addAll(PaginatedOrderModel.fromJson(response.body).orders);
+        _runningPageSize =
+            PaginatedOrderModel.fromJson(response.body).totalSize;
         _runningPaginate = false;
-        if(fromHome && _isRunningOrderViewShow){
+        if (fromHome && _isRunningOrderViewShow) {
           canActiveOrder();
         }
         update();
@@ -124,26 +126,27 @@ class OrderController extends GetxController implements GetxService {
         ApiChecker.checkApi(response);
       }
     } else {
-      if(_runningPaginate) {
+      if (_runningPaginate) {
         _runningPaginate = false;
         update();
       }
     }
   }
 
-  void canActiveOrder(){
-    if(_runningOrderList.isNotEmpty){
-
-      for(int i = 0; i < _runningOrderList.length; i++){
-        if(_runningOrderList[i].orderStatus == AppConstants.PENDING || _runningOrderList[i].orderStatus == AppConstants.ACCEPTED
-            || _runningOrderList[i].orderStatus == AppConstants.PROCESSING || _runningOrderList[i].orderStatus == AppConstants.CONFIRMED
-            || _runningOrderList[i].orderStatus == AppConstants.HANDOVER || _runningOrderList[i].orderStatus == AppConstants.PICKED_UP){
-
+  void canActiveOrder() {
+    if (_runningOrderList.isNotEmpty) {
+      for (int i = 0; i < _runningOrderList.length; i++) {
+        if (_runningOrderList[i].orderStatus == AppConstants.PENDING ||
+            _runningOrderList[i].orderStatus == AppConstants.ACCEPTED ||
+            _runningOrderList[i].orderStatus == AppConstants.PROCESSING ||
+            _runningOrderList[i].orderStatus == AppConstants.CONFIRMED ||
+            _runningOrderList[i].orderStatus == AppConstants.HANDOVER ||
+            _runningOrderList[i].orderStatus == AppConstants.PICKED_UP) {
           _isRunningOrderViewShow = true;
           _runningOrderIndex = i;
           print(_runningOrderIndex);
           break;
-        }else{
+        } else {
           _isRunningOrderViewShow = false;
           print('not found any ongoing order');
         }
@@ -153,10 +156,10 @@ class OrderController extends GetxController implements GetxService {
   }
 
   Future<void> getHistoryOrders(int offset, {bool notify = true}) async {
-    if(offset == 1) {
+    if (offset == 1) {
       _historyOffsetList = [];
       _historyOrderList = null;
-      if(notify) {
+      if (notify) {
         update();
       }
     }
@@ -168,15 +171,17 @@ class OrderController extends GetxController implements GetxService {
         if (offset == 1) {
           _historyOrderList = [];
         }
-        _historyOrderList.addAll(PaginatedOrderModel.fromJson(response.body).orders);
-        _historyPageSize = PaginatedOrderModel.fromJson(response.body).totalSize;
+        _historyOrderList
+            .addAll(PaginatedOrderModel.fromJson(response.body).orders);
+        _historyPageSize =
+            PaginatedOrderModel.fromJson(response.body).totalSize;
         _historyPaginate = false;
         update();
       } else {
         ApiChecker.checkApi(response);
       }
     } else {
-      if(_historyPaginate) {
+      if (_historyPaginate) {
         _historyPaginate = false;
         update();
       }
@@ -184,18 +189,18 @@ class OrderController extends GetxController implements GetxService {
   }
 
   void showBottomLoader(bool isRunning) {
-    if(isRunning) {
+    if (isRunning) {
       _runningPaginate = true;
-    }else {
+    } else {
       _historyPaginate = true;
     }
     update();
   }
 
   void setOffset(int offset, bool isRunning) {
-    if(isRunning) {
+    if (isRunning) {
       _runningOffset = offset;
-    }else {
+    } else {
       _historyOffset = offset;
     }
   }
@@ -209,7 +214,8 @@ class OrderController extends GetxController implements GetxService {
     _isLoading = false;
     if (response.statusCode == 200) {
       _orderDetails = [];
-      response.body.forEach((orderDetail) => _orderDetails.add(OrderDetailsModel.fromJson(orderDetail)));
+      response.body.forEach((orderDetail) =>
+          _orderDetails.add(OrderDetailsModel.fromJson(orderDetail)));
     } else {
       ApiChecker.checkApi(response);
     }
@@ -222,14 +228,15 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  Future<ResponseModel> trackOrder(String orderID, OrderModel orderModel, bool fromTracking) async {
+  Future<ResponseModel> trackOrder(
+      String orderID, OrderModel orderModel, bool fromTracking) async {
     _trackModel = null;
     _responseModel = null;
-    if(!fromTracking) {
+    if (!fromTracking) {
       _orderDetails = null;
     }
     _showCancelled = false;
-    if(orderModel == null) {
+    if (orderModel == null) {
       _isLoading = true;
       Response response = await orderRepo.trackOrder(orderID);
       if (response.statusCode == 200) {
@@ -241,7 +248,7 @@ class OrderController extends GetxController implements GetxService {
       }
       _isLoading = false;
       update();
-    }else {
+    } else {
       _trackModel = orderModel;
       _responseModel = ResponseModel(true, 'Successful');
     }
@@ -264,7 +271,8 @@ class OrderController extends GetxController implements GetxService {
     return _responseModel;
   }
 
-  Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback, double amount) async {
+  Future<void> placeOrder(
+      PlaceOrderBody placeOrderBody, Function callback, double amount) async {
     _isLoading = true;
     update();
     print(placeOrderBody.toJson());
@@ -288,9 +296,15 @@ class OrderController extends GetxController implements GetxService {
 
   void clearPrevData() {
     _addressIndex = 0;
-    _paymentMethodIndex = Get.find<SplashController>().configModel.cashOnDelivery ? 0
-        : Get.find<SplashController>().configModel.digitalPayment ? 1
-        : Get.find<SplashController>().configModel.customerWalletStatus == 1 ? 2 : 0;
+    _paymentMethodIndex = Get.find<SplashController>()
+            .configModel
+            .cashOnDelivery
+        ? 0
+        : Get.find<SplashController>().configModel.digitalPayment
+            ? 1
+            : Get.find<SplashController>().configModel.customerWalletStatus == 1
+                ? 2
+                : 0;
     _selectedDateSlot = 0;
     _selectedTimeSlot = 0;
     _distance = null;
@@ -309,8 +323,8 @@ class OrderController extends GetxController implements GetxService {
     Get.back();
     if (response.statusCode == 200) {
       OrderModel orderModel;
-      for(OrderModel order in _runningOrderList) {
-        if(order.id == orderID) {
+      for (OrderModel order in _runningOrderList) {
+        if (order.id == orderID) {
           orderModel = order;
           break;
         }
@@ -327,7 +341,7 @@ class OrderController extends GetxController implements GetxService {
 
   void setOrderType(String type, {bool notify = true}) {
     _orderType = type;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
@@ -337,39 +351,72 @@ class OrderController extends GetxController implements GetxService {
     _allTimeSlots = [];
     int _minutes = 0;
     DateTime _now = DateTime.now();
-    for(int index=0; index<restaurant.schedules.length; index++) {
+    for (int index = 0; index < restaurant.schedules.length; index++) {
       DateTime _openTime = DateTime(
-        _now.year, _now.month, _now.day, DateConverter.convertStringTimeToDate(restaurant.schedules[index].openingTime).hour,
-        DateConverter.convertStringTimeToDate(restaurant.schedules[index].openingTime).minute,
+        _now.year,
+        _now.month,
+        _now.day,
+        DateConverter.convertStringTimeToDate(
+                restaurant.schedules[index].openingTime)
+            .hour,
+        DateConverter.convertStringTimeToDate(
+                restaurant.schedules[index].openingTime)
+            .minute,
       );
       DateTime _closeTime = DateTime(
-        _now.year, _now.month, _now.day, DateConverter.convertStringTimeToDate(restaurant.schedules[index].closingTime).hour,
-        DateConverter.convertStringTimeToDate(restaurant.schedules[index].closingTime).minute,
+        _now.year,
+        _now.month,
+        _now.day,
+        DateConverter.convertStringTimeToDate(
+                restaurant.schedules[index].closingTime)
+            .hour,
+        DateConverter.convertStringTimeToDate(
+                restaurant.schedules[index].closingTime)
+            .minute,
       );
-      if(_closeTime.difference(_openTime).isNegative) {
+      if (_closeTime.difference(_openTime).isNegative) {
         _minutes = _openTime.difference(_closeTime).inMinutes;
-      }else {
+      } else {
         _minutes = _closeTime.difference(_openTime).inMinutes;
       }
-      if(_minutes > Get.find<SplashController>().configModel.scheduleOrderSlotDuration) {
+      if (_minutes >
+          Get.find<SplashController>().configModel.scheduleOrderSlotDuration) {
         DateTime _time = _openTime;
-        for(;;) {
-          if(_time.isBefore(_closeTime)) {
+        for (;;) {
+          if (_time.isBefore(_closeTime)) {
             DateTime _start = _time;
-            DateTime _end = _start.add(Duration(minutes: Get.find<SplashController>().configModel.scheduleOrderSlotDuration));
-            if(_end.isAfter(_closeTime)) {
+            DateTime _end = _start.add(Duration(
+                minutes: Get.find<SplashController>()
+                    .configModel
+                    .scheduleOrderSlotDuration));
+            if (_end.isAfter(_closeTime)) {
               _end = _closeTime;
             }
-            _timeSlots.add(TimeSlotModel(day: restaurant.schedules[index].day, startTime: _start, endTime: _end));
-            _allTimeSlots.add(TimeSlotModel(day: restaurant.schedules[index].day, startTime: _start, endTime: _end));
-            _time = _time.add(Duration(minutes: Get.find<SplashController>().configModel.scheduleOrderSlotDuration));
-          }else {
+            _timeSlots.add(TimeSlotModel(
+                day: restaurant.schedules[index].day,
+                startTime: _start,
+                endTime: _end));
+            _allTimeSlots.add(TimeSlotModel(
+                day: restaurant.schedules[index].day,
+                startTime: _start,
+                endTime: _end));
+            _time = _time.add(Duration(
+                minutes: Get.find<SplashController>()
+                    .configModel
+                    .scheduleOrderSlotDuration));
+          } else {
             break;
           }
         }
-      }else {
-        _timeSlots.add(TimeSlotModel(day: restaurant.schedules[index].day, startTime: _openTime, endTime: _closeTime));
-        _allTimeSlots.add(TimeSlotModel(day: restaurant.schedules[index].day, startTime: _openTime, endTime: _closeTime));
+      } else {
+        _timeSlots.add(TimeSlotModel(
+            day: restaurant.schedules[index].day,
+            startTime: _openTime,
+            endTime: _closeTime));
+        _allTimeSlots.add(TimeSlotModel(
+            day: restaurant.schedules[index].day,
+            startTime: _openTime,
+            endTime: _closeTime));
       }
     }
     validateSlot(_allTimeSlots, 0, notify: false);
@@ -377,14 +424,14 @@ class OrderController extends GetxController implements GetxService {
 
   void updateTimeSlot(int index, {bool notify = true}) {
     _selectedTimeSlot = index;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
 
   void updateTips(int index, {bool notify = true}) {
     _selectedTips = index;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
@@ -392,33 +439,37 @@ class OrderController extends GetxController implements GetxService {
   void updateDateSlot(int index) {
     _selectedDateSlot = index;
     _selectedTimeSlot = 0;
-    if(_allTimeSlots != null) {
+    if (_allTimeSlots != null) {
       validateSlot(_allTimeSlots, index);
     }
     update();
   }
 
-  void validateSlot(List<TimeSlotModel> slots, int dateIndex, {bool notify = true}) {
+  void validateSlot(List<TimeSlotModel> slots, int dateIndex,
+      {bool notify = true}) {
     _timeSlots = [];
     int _day = 0;
-    if(dateIndex == 0) {
+    if (dateIndex == 0) {
       _day = DateTime.now().weekday;
-    }else {
+    } else {
       _day = DateTime.now().add(Duration(days: 1)).weekday;
     }
-    if(_day == 7) {
+    if (_day == 7) {
       _day = 0;
     }
     _slotIndexList = [];
     int _index = 0;
-    for(int index=0; index<slots.length; index++) {
-      if (_day == slots[index].day && (dateIndex == 0 ? slots[index].endTime.isAfter(DateTime.now()) : true)) {
+    for (int index = 0; index < slots.length; index++) {
+      if (_day == slots[index].day &&
+          (dateIndex == 0
+              ? slots[index].endTime.isAfter(DateTime.now())
+              : true)) {
         _timeSlots.add(slots[index]);
         _slotIndexList.add(_index);
-        _index ++;
+        _index++;
       }
     }
-    if(notify) {
+    if (notify) {
       update();
     }
   }
@@ -441,24 +492,38 @@ class OrderController extends GetxController implements GetxService {
     return _isSuccess;
   }
 
-  Future<double> getDistanceInMeter(LatLng originLatLng, LatLng destinationLatLng) async {
+  Future<double> getDistanceInMeter(
+      LatLng originLatLng, LatLng destinationLatLng) async {
     _distance = -1;
-    Response response = await orderRepo.getDistanceInMeter(originLatLng, destinationLatLng);
+    Response response =
+        await orderRepo.getDistanceInMeter(originLatLng, destinationLatLng);
     try {
       if (response.statusCode == 200 && response.body['status'] == 'OK') {
-        _distance = DistanceModel.fromJson(response.body).rows[0].elements[0].distance.value / 1000;
+        _distance = DistanceModel.fromJson(response.body)
+                .rows[0]
+                .elements[0]
+                .distance
+                .value /
+            1000;
       } else {
         _distance = Geolocator.distanceBetween(
-          originLatLng.latitude, originLatLng.longitude, destinationLatLng.latitude, destinationLatLng.longitude,
-        ) / 1000;
+              originLatLng.latitude,
+              originLatLng.longitude,
+              destinationLatLng.latitude,
+              destinationLatLng.longitude,
+            ) /
+            1000;
       }
     } catch (e) {
       _distance = Geolocator.distanceBetween(
-        originLatLng.latitude, originLatLng.longitude, destinationLatLng.latitude, destinationLatLng.longitude,
-      ) / 1000;
+            originLatLng.latitude,
+            originLatLng.longitude,
+            destinationLatLng.latitude,
+            destinationLatLng.longitude,
+          ) /
+          1000;
     }
     update();
     return _distance;
   }
-
 }
