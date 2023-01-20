@@ -5,7 +5,7 @@ class AppConstants {
   static const String APP_NAME = 'CHOOZE';
   static const double APP_VERSION = 5.9;
 
-  static const String BASE_URL = 'https://choozeessen.com';
+  static const String BASE_URL = 'http://choozeessen.com';
   static const String CATEGORY_URI = '/api/v1/categories';
   static const String BANNER_URI = '/api/v1/banners';
   static const String RESTAURANT_PRODUCT_URI = '/api/v1/products/latest';
@@ -14,7 +14,8 @@ class AppConstants {
   static const String SEARCH_PRODUCT_URI = '/api/v1/products/details/';
   static const String SUB_CATEGORY_URI = '/api/v1/categories/childes/';
   static const String CATEGORY_PRODUCT_URI = '/api/v1/categories/products/';
-  static const String CATEGORY_RESTAURANT_URI = '/api/v1/categories/restaurants/';
+  static const String CATEGORY_RESTAURANT_URI =
+      '/api/v1/categories/restaurants/';
   static const String CONFIG_URI = '/api/v1/config';
   static const String TRACK_URI = '/api/v1/customer/order/track?order_id=';
   static const String MESSAGE_URI = '/api/v1/customer/message/get';
@@ -31,48 +32,59 @@ class AppConstants {
   static const String PLACE_ORDER_URI = '/api/v1/customer/order/place';
   static const String ADDRESS_LIST_URI = '/api/v1/customer/address/list';
   static const String ZONE_URI = '/api/v1/config/get-zone-id';
-  static const String REMOVE_ADDRESS_URI = '/api/v1/customer/address/delete?address_id=';
+  static const String REMOVE_ADDRESS_URI =
+      '/api/v1/customer/address/delete?address_id=';
   static const String ADD_ADDRESS_URI = '/api/v1/customer/address/add';
   static const String UPDATE_ADDRESS_URI = '/api/v1/customer/address/update/';
   static const String SET_MENU_URI = '/api/v1/products/set-menu';
   static const String CUSTOMER_INFO_URI = '/api/v1/customer/info';
   static const String COUPON_URI = '/api/v1/coupon/list';
   static const String COUPON_APPLY_URI = '/api/v1/coupon/apply?code=';
-  static const String RUNNING_ORDER_LIST_URI = '/api/v1/customer/order/running-orders';
+  static const String RUNNING_ORDER_LIST_URI =
+      '/api/v1/customer/order/running-orders';
   static const String HISTORY_ORDER_LIST_URI = '/api/v1/customer/order/list';
   static const String ORDER_CANCEL_URI = '/api/v1/customer/order/cancel';
   static const String COD_SWITCH_URL = '/api/v1/customer/order/payment-method';
-  static const String ORDER_DETAILS_URI = '/api/v1/customer/order/details?order_id=';
+  static const String ORDER_DETAILS_URI =
+      '/api/v1/customer/order/details?order_id=';
   static const String WISH_LIST_GET_URI = '/api/v1/customer/wish-list';
   static const String ADD_WISH_LIST_URI = '/api/v1/customer/wish-list/add?';
-  static const String REMOVE_WISH_LIST_URI = '/api/v1/customer/wish-list/remove?';
+  static const String REMOVE_WISH_LIST_URI =
+      '/api/v1/customer/wish-list/remove?';
   static const String NOTIFICATION_URI = '/api/v1/customer/notifications';
   static const String UPDATE_PROFILE_URI = '/api/v1/customer/update-profile';
   static const String SEARCH_URI = '/api/v1/';
   static const String REVIEW_URI = '/api/v1/products/reviews/submit';
   static const String PRODUCT_DETAILS_URI = '/api/v1/products/details/';
-  static const String LAST_LOCATION_URI = '/api/v1/delivery-man/last-location?order_id=';
-  static const String DELIVER_MAN_REVIEW_URI = '/api/v1/delivery-man/reviews/submit';
+  static const String LAST_LOCATION_URI =
+      '/api/v1/delivery-man/last-location?order_id=';
+  static const String DELIVER_MAN_REVIEW_URI =
+      '/api/v1/delivery-man/reviews/submit';
   static const String RESTAURANT_URI = '/api/v1/restaurants/get-restaurants';
   static const String POPULAR_RESTAURANT_URI = '/api/v1/restaurants/popular';
   static const String LATEST_RESTAURANT_URI = '/api/v1/restaurants/latest';
   static const String RESTAURANT_DETAILS_URI = '/api/v1/restaurants/details/';
   static const String BASIC_CAMPAIGN_URI = '/api/v1/campaigns/basic';
   static const String ITEM_CAMPAIGN_URI = '/api/v1/campaigns/item';
-  static const String BASIC_CAMPAIGN_DETAILS_URI = '/api/v1/campaigns/basic-campaign-details?basic_campaign_id=';
+  static const String BASIC_CAMPAIGN_DETAILS_URI =
+      '/api/v1/campaigns/basic-campaign-details?basic_campaign_id=';
   static const String INTEREST_URI = '/api/v1/customer/update-interest';
   static const String SUGGESTED_FOOD_URI = '/api/v1/customer/suggested-foods';
   static const String RESTAURANT_REVIEW_URI = '/api/v1/restaurants/reviews';
   static const String DISTANCE_MATRIX_URI = '/api/v1/config/distance-api';
-  static const String SEARCH_LOCATION_URI = '/api/v1/config/place-api-autocomplete';
+  static const String SEARCH_LOCATION_URI =
+      '/api/v1/config/place-api-autocomplete';
   static const String PLACE_DETAILS_URI = '/api/v1/config/place-api-details';
   static const String GEOCODE_URI = '/api/v1/config/geocode-api';
   static const String SOCIAL_LOGIN_URL = '/api/v1/auth/social-login';
   static const String SOCIAL_REGISTER_URL = '/api/v1/auth/social-register';
   static const String UPDATE_ZONE_URL = '/api/v1/customer/update-zone';
-  static const String WALLET_TRANSACTION_URL = '/api/v1/customer/wallet/transactions';
-  static const String LOYALTY_TRANSACTION_URL = '/api/v1/customer/loyalty-point/transactions';
-  static const String LOYALTY_POINT_TRANSFER_URL = '/api/v1/customer/loyalty-point/point-transfer';
+  static const String WALLET_TRANSACTION_URL =
+      '/api/v1/customer/wallet/transactions';
+  static const String LOYALTY_TRANSACTION_URL =
+      '/api/v1/customer/loyalty-point/transactions';
+  static const String LOYALTY_POINT_TRANSFER_URL =
+      '/api/v1/customer/loyalty-point/point-transfer';
   static const String CUSTOMER_REMOVE = '/api/v1/customer/remove-account';
 
   // Shared Key
@@ -111,10 +123,17 @@ class AppConstants {
   //Preference Day
   static List<String> preferenceDays = ['today', 'tomorrow'];
 
-
   static List<LanguageModel> languages = [
-    LanguageModel(imageUrl: Images.english, languageName: 'English', countryCode: 'US', languageCode: 'en'),
+    LanguageModel(
+        imageUrl: Images.english,
+        languageName: 'English',
+        countryCode: 'US',
+        languageCode: 'en'),
     // LanguageModel(imageUrl: Images.arabic, languageName: 'ಕನ್ನಡ', countryCode: 'SA', languageCode: 'ar'),
-    LanguageModel(imageUrl: Images.arabic, languageName: 'ಕನ್ನಡ', countryCode: 'IN', languageCode: 'kn'),
+    LanguageModel(
+        imageUrl: Images.arabic,
+        languageName: 'ಕನ್ನಡ',
+        countryCode: 'IN',
+        languageCode: 'kn'),
   ];
 }
