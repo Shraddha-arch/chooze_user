@@ -7,8 +7,8 @@ class AppConstants {
 
   // static const String BASE_URL = 'https://choozeessen.com';
   // static const String BASE_URL = 'http://choozeessen.com';
-  // static const String BASE_URL = 'http://15.206.50.216';
-  static const String BASE_URL = 'https://choozeessen.com';
+  //  static const String BASE_URL = 'http://15.206.50.216';
+   static const String BASE_URL = 'https://choozeessen.com';
 
   static const String CATEGORY_URI = '/api/v1/categories';
   static const String BANNER_URI = '/api/v1/banners';
