@@ -358,12 +358,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 SizedBox(
                                                     height: Dimensions
                                                         .PADDING_SIZE_LARGE),
-                                                Center(
-                                                  child: Text('delivery_charge'
-                                                          .tr +
-                                                      ': ' +
-                                                      '${(orderController.orderType == 'take_away' || (orderController.deliverySelectIndex == 0 ? restController.restaurant.freeDelivery : true)) ? 'free'.tr : _charge != -1 ? PriceConverter.convertPrice(orderController.deliverySelectIndex == 0 ? _charge : _deliveryCharge) : 'calculating'.tr}'),
-                                                )
+                                                // Center(
+                                                //   child: Text('delivery_charge'
+                                                //           .tr +
+                                                //       ': ' +
+                                                //       '${(orderController.orderType == 'take_away' || (orderController.deliverySelectIndex == 0 ? restController.restaurant.freeDelivery : true)) ? 'free'.tr : _charge != -1 ? PriceConverter.convertPrice(orderController.deliverySelectIndex == 0 ? _charge : _deliveryCharge) : 'calculating'.tr}'),
+                                                // )
                                               ]),
                                         ),
                                         SizedBox(
@@ -1723,7 +1723,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               '${AppConstants.BASE_URL}/payment-mobile?order_id=$orderID&customer_id=${Get.find<UserController>().userInfoModel.id}&&callback=$protocol//$hostname${RouteHelper.orderSuccess}?id=$orderID&amount=$amount&status=';
           html.window.open(selectedUrl, "_self");
         } else {
-          print('payment screen la');
           Get.offNamed(RouteHelper.getPaymentRoute(
               orderID, Get.find<UserController>().userInfoModel.id, amount));
         }
