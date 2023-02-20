@@ -44,6 +44,8 @@ dependencies:
   photo_view: ^0.14.0
   dotted_border: ^2.0.0+2
   share_plus: ^4.0.4
+  pay: ^1.1.0
+  flutter_tawk: ^0.1.0
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +57,7 @@ flutter:
   assets:
     - assets/image/
     - assets/language/
+    - assets/json_file/
 
   fonts:
     - family: Roboto

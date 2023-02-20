@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:efood_multivendor/controller/splash_controller.dart';
 import 'package:efood_multivendor/data/api/api_checker.dart';
 import 'package:efood_multivendor/data/model/body/place_order_body.dart';
@@ -281,7 +283,10 @@ class OrderController extends GetxController implements GetxService {
     if (response.statusCode == 200) {
       String message = response.body['message'];
       String orderID = response.body['order_id'].toString();
+      // Random random = new Random();
+      // int randomNumber = random.nextInt(100000);
       callback(true, message, orderID, amount);
+      // callback(true, message, randomNumber.toString(), amount);
       print('-------- Order placed successfully $orderID ----------');
     } else {
       callback(false, response.statusText, '-1', amount);

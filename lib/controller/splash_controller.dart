@@ -22,12 +22,13 @@ class SplashController extends GetxController implements GetxService {
     _hasConnection = true;
     Response response = await splashRepo.getConfigData();
     bool _isSuccess = false;
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
+      print('config body  ${response.body}  ');
       _configModel = ConfigModel.fromJson(response.body);
       _isSuccess = true;
-    }else {
+    } else {
       ApiChecker.checkApi(response);
-      if(response.statusText == ApiClient.noInternetMessage) {
+      if (response.statusText == ApiClient.noInternetMessage) {
         _hasConnection = false;
       }
       _isSuccess = false;
