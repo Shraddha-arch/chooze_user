@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:collection';
+import 'dart:math';
 import 'package:efood_multivendor/controller/order_controller.dart';
 import 'package:efood_multivendor/controller/user_controller.dart';
 import 'package:efood_multivendor/data/model/response/order_model.dart';
@@ -11,10 +12,14 @@ import 'package:efood_multivendor/util/images.dart';
 import 'package:efood_multivendor/view/base/custom_app_bar.dart';
 import 'package:efood_multivendor/view/base/custom_button.dart';
 import 'package:efood_multivendor/view/screens/checkout/widget/payment_failed_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:pay/pay.dart';
+import 'package:upi_pay_india/upi_pay_india.dart';
+// import 'package:upi_india/upi_india.dart';
 
 import '../../../controller/coupon_controller.dart';
 import '../../../data/model/body/place_order_body.dart';
@@ -22,6 +27,7 @@ import '../../../data/model/response/address_model.dart';
 import '../../../data/model/response/cart_model.dart';
 import '../../../helper/date_converter.dart';
 import '../../base/custom_snackbar.dart';
+import 'dart:ui' as ui;
 
 class PaymentScreen extends StatefulWidget {
   final OrderModel orderModel;
@@ -42,6 +48,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
   bool isCheckedOther = false;
   String payID;
   String amount;
+  // UpiIndia _upiIndia = UpiIndia();
+  // List<UpiApp> apps;
+  // UpiApp _upiApp;
+  UpiPay _upiPay;
+  ApplicationMeta app;
+  Uint8List markerIcon;
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
+  }
 
   @override
   void initState() {
@@ -51,8 +73,69 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     payID = widget.orderModel.id.toString();
     amount = widget.orderModel.orderAmount.toString();
+    getMarker();
+    // _upiIndia.getAllUpiApps(mandatoryTransactionId: false, includeOnly: [
+    //   // UpiApp("GPay", "com.google.android.apps.nbu.paisa.user")
+    // ]).then((value) {
+    //   setState(() {
+    //     apps = value;
+    //   });
+    // }).catchError((e) {
+    //   apps = [];
+    // });
+    // _upiApp = UpiApp.googlePay;
+    app = ApplicationMeta.android(UpiApplication.googlePay, markerIcon, 1, 1);
     // _initData();
   }
+
+  getMarker() async {
+    markerIcon = await getBytesFromAsset(Images.logo, 100);
+  }
+
+  // Widget displayUpiApps() {
+  //   if (apps == null)
+  //     return Center(child: CircularProgressIndicator());
+  //   else if (apps.length == 0)
+  //     return Center(
+  //       child: Text(
+  //         "No apps found to handle transaction.",
+  //         // style: header,
+  //       ),
+  //     );
+  //   else
+  //     return Align(
+  //       alignment: Alignment.topCenter,
+  //       child: SingleChildScrollView(
+  //         physics: BouncingScrollPhysics(),
+  //         child: Wrap(
+  //           children: apps.map<Widget>((UpiApp app) {
+  //             return GestureDetector(
+  //               onTap: () {
+  //                 // _transaction = initiateTransaction(app);
+  //                 // setState(() {});
+  //               },
+  //               child: Container(
+  //                 height: 70,
+  //                 width: 70,
+  //                 child: Column(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: <Widget>[
+  //                     Image.memory(
+  //                       app.icon,
+  //                       height: 40,
+  //                       width: 40,
+  //                     ),
+  //                     Text(app.name),
+  //                   ],
+  //                 ),
+  //               ),
+  //             );
+  //           }).toList(),
+  //         ),
+  //       ),
+  //     );
+  // }
 
   void _initData() async {
     browser = MyInAppBrowser(
@@ -121,80 +204,65 @@ class _PaymentScreenState extends State<PaymentScreen> {
     // Send the resulting Google Pay token to your server / PSP
   }
 
-  // String defaultGooglePay = '''{
-  //     "provider": "google_pay",
-  //     "data": {
-  //       "environment": "TEST",
-  //       "apiVersion": 2,
-  //       "apiVersionMinor": 0,
-  //       "allowedPaymentMethods": [
-  //         {
-  //           "type": "CARD",
-  //           "tokenizationSpecification": {
-  //             "type": "PAYMENT_GATEWAY",
-  //             "parameters": {
-  //               "gateway": "example",
-  //               "gatewayMerchantId": "gatewayMerchantId"
-  //             }
-  //           },
-  //           "parameters": {
-  //             "allowedCardNetworks": ["VISA", "MASTERCARD"],
-  //             "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-  //             "billingAddressRequired": true,
-  //             "billingAddressParameters": {
-  //               "format": "FULL",
-  //               "phoneNumberRequired": true
-  //             }
-  //           }
-  //         }
-  //       ],
-  //       "merchantInfo": {
-  //         "merchantId": "01234567890123456789",
-  //         "merchantName": "Example Merchant Name"
-  //       },
-  //       "transactionInfo": {
-  //         "countryCode": "IN",
-  //         "currencyCode": "INR"
-  //       }
-  //     }
-  //   }''';
-  String defaultGooglePay = '''{
-  "provider": "google_pay",
-  "data": {
-    "environment": "TEST",
-    "apiVersion": 2,
-    "apiVersionMinor": 0,
-    "allowedPaymentMethods": [
-      {
-        "type": "CARD",
-        "tokenizationSpecification": {
-          "type": "PAYMENT_GATEWAY",
-          "parameters": {
-            "gateway": "example",
-            "gatewayMerchantId": "gatewayMerchantId"
-          }
-        },
-        "parameters": {
-          "allowedCardNetworks": ["VISA", "MASTERCARD"],
-          "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-          "billingAddressRequired": true,
-          "billingAddressParameters": {
-            "format": "FULL",
-            "phoneNumberRequired": true
-          }
-        }
-      }
-    ],
-    "merchantInfo": {
-      "merchantId": "01234567890123456789",
-      "merchantName": "Example Merchant Name"
-    },
-    "transactionInfo": {
-      "countryCode": "US",
-      "currencyCode": "USD"
-    }
+  // Future<UpiResponse> initiateTransaction() async {
+  //   return _upiIndia.startTransaction(
+  //     app: _upiApp,
+  //     receiverUpiId: "8956142213@ybl",
+  //     receiverName: 'Dhanraj Nilkanth',
+  //     transactionRefId: '${widget.orderModel.id}',
+  //     transactionNote: 'Not actual. Just an example.',
+  //     amount: 1.00,
+  //   );
+  // }
+
+  // String _upiErrorHandler(error) {
+  //   switch (error) {
+  //     case UpiIndiaAppNotInstalledException:
+  //       return 'Requested app not installed on device';
+  //     case UpiIndiaUserCancelledException:
+  //       return 'You cancelled the transaction';
+  //     case UpiIndiaNullResponseException:
+  //       return 'Requested app didn\'t return any response';
+  //     case UpiIndiaInvalidParametersException:
+  //       return 'Requested app cannot handle the transaction';
+  //     default:
+  //       return 'An Unknown error has occurred';
+  //   }
+  // }
+
+  // void _checkTxnStatus(String status) {
+  //   switch (status) {
+  //     case UpiPaymentStatus.SUCCESS:
+  //       print('Transaction Successful');
+  //       break;
+  //     case UpiPaymentStatus.SUBMITTED:
+  //       print('Transaction Submitted');
+  //       break;
+  //     case UpiPaymentStatus.FAILURE:
+  //       print('Transaction Failed');
+  //       break;
+  //     default:
+  //       print('Received an Unknown transaction status');
+  //   }
+  // }
+
+  Widget displayTransactionData(title, body) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "$title: ",
+          ),
+          Flexible(
+              child: Text(
+            body,
+          )),
+        ],
+      ),
+    );
   }
-}''';
 
   @override
   Widget build(BuildContext context) {
@@ -236,6 +304,77 @@ class _PaymentScreenState extends State<PaymentScreen> {
         body: SingleChildScrollView(
             child: Column(
           children: [
+            // app != null
+            //     ? Container(
+            //         child: Text(app.packageName),
+            //       )
+            //     : SizedBox(),
+            // _upiApp != null
+            //     ? Container(
+            //         height: 70,
+            //         width: 70,
+            //         child: Column(
+            //           mainAxisSize: MainAxisSize.min,
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: <Widget>[
+            //             // Image.memory(
+            //             //   _upiApp.icon,
+            //             //   height: 40,
+            //             //   width: 40,
+            //             // ),
+            //             Text(_upiApp.name),
+            //           ],
+            //         ),
+            //       )
+            //     : SizedBox(),
+            // Container(
+            //   child: FutureBuilder(
+            //     // future: initiateTransaction(),
+            //     builder: (BuildContext context,
+            //         AsyncSnapshot<UpiResponse> snapshot) {
+            //       if (snapshot.connectionState == ConnectionState.done) {
+            //         if (snapshot.hasError) {
+            //           return Center(
+            //             child: Text(
+            //               _upiErrorHandler(snapshot.error.runtimeType),
+            //             ), // Print's text message on screen
+            //           );
+            //         }
+
+            //         // If we have data then definitely we will have UpiResponse.
+            //         // It cannot be null
+            //         UpiResponse _upiResponse = snapshot.data;
+
+            //         // Data in UpiResponse can be null. Check before printing
+            //         String txnId = _upiResponse.transactionId ?? 'N/A';
+            //         String resCode = _upiResponse.responseCode ?? 'N/A';
+            //         String txnRef = _upiResponse.transactionRefId ?? 'N/A';
+            //         String status = _upiResponse.status ?? 'N/A';
+            //         String approvalRef = _upiResponse.approvalRefNo ?? 'N/A';
+            //         _checkTxnStatus(status);
+
+            //         return Padding(
+            //           padding: const EdgeInsets.all(8.0),
+            //           child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             mainAxisSize: MainAxisSize.min,
+            //             children: <Widget>[
+            //               displayTransactionData('Transaction Id', txnId),
+            //               displayTransactionData('Response Code', resCode),
+            //               displayTransactionData('Reference Id', txnRef),
+            //               displayTransactionData(
+            //                   'Status', status.toUpperCase()),
+            //               displayTransactionData('Approval No', approvalRef),
+            //             ],
+            //           ),
+            //         );
+            //       } else
+            //         return Center(
+            //           child: Text(''),
+            //         );
+            //     },
+            //   ),
+            // ),
             gpayWidget(),
             // GooglePayButton(
             //     paymentConfiguration:
@@ -246,25 +385,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
             //     paymentItems: [
             //       PaymentItem(amount: '100'),
             //     ]),
-            GooglePayButton(
-              paymentConfiguration:
-                  PaymentConfiguration.fromJsonString(defaultGooglePay),
-              // paymentConfiguration: 'assets/json_file/gpay.json',
-              paymentItems: [
-                PaymentItem(
-                  label: '${widget.orderModel.id.toString()}',
-                  amount: '${widget.orderModel.orderAmount.toString()}',
-                  status: PaymentItemStatus.final_price,
-                )
-              ],
-              type: GooglePayButtonType.pay,
-              margin: const EdgeInsets.only(top: 15.0),
-              onPaymentResult: onGooglePayResult,
-              loadingIndicator: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
+            // GooglePayButton(
+            //   paymentConfiguration:
+            //       PaymentConfiguration.fromJsonString(defaultGooglePay),
+            //   // paymentConfiguration: 'assets/json_file/gpay.json',
+            //   paymentItems: [
+            //     PaymentItem(
+            //       label: '${widget.orderModel.id.toString()}',
+            //       amount: '${widget.orderModel.orderAmount.toString()}',
+            //       status: PaymentItemStatus.final_price,
+            //     )
+            //   ],
+            //   type: GooglePayButtonType.pay,
+            //   margin: const EdgeInsets.only(top: 15.0),
+            //   onPaymentResult: onGooglePayResult,
+            //   loadingIndicator: const Center(
+            //     child: CircularProgressIndicator(),
+            //   ),
+            // ),
             upiWidget(),
+            // displayUpiApps()
           ],
         )),
       ),
@@ -329,9 +469,49 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               isCheckedGooglePay
                   ? InkWell(
-                      onTap: () {
+                      onTap: () async {
                         print('gpay');
-                        _initData();
+                        // final transactionRef =
+                        //     Random.secure().nextInt(1 << 32).toString();
+                        final a = await UpiPay.initiateTransaction(
+                          amount: '1',
+                          app: app.upiApplication,
+                          receiverName: 'Shraddha',
+                          receiverUpiAddress: 'q596940233@ybl',
+                          transactionRef: widget.orderModel.id.toString(),
+                          transactionNote: 'UPI Payment',
+                          // merchantCode: '7372',
+                        );
+
+                        if (a != null) {
+                          print('statusss ${a.status} ');
+                          print('statusss ${a.txnId}');
+                          print('statusss ${a.responseCode}');
+                          print('statusss ${a.approvalRefNo}');
+                          print('statusss ${a.txnRef}');
+                          if (a.status == UpiTransactionStatus.failure) {
+                            // SnackBar(content: Text('Google Pay Not Found'));
+                            showCustomSnackBar('Google Pay Not Found');
+                          }
+                        }
+
+                        // _initData();
+                        // UpiResponse response = await initiateTransaction();
+
+                        // if (response != null) {
+                        //   _checkTxnStatus(response.status);
+                        //   print('statussss ${response.status}  ');
+                        //   print('statussss ${response.approvalRefNo}  ');
+                        //   print('statussss ${response.responseCode}  ');
+                        //   print('statussss ${response.transactionId}  ');
+                        //   print('statussss ${response.transactionRefId}  ');
+                        // }
+
+                        // print('statussss ${response.status}  ');
+                        // print('statussss ${response.approvalRefNo}  ');
+                        // print('statussss ${response.responseCode}  ');
+                        // print('statussss ${response.transactionId}  ');
+                        // print('statussss ${response.transactionRefId}  ');
                       },
                       child: Container(
                         height: 50,
