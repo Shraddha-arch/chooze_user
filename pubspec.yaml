@@ -1,7 +1,7 @@
 name: efood_multivendor
 description: A new Flutter application.
 publish_to: "none" #
-version: 1.0.0+10
+version: 1.0.0+17
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -40,7 +40,7 @@ dependencies:
   cached_network_image:
   #  google_sign_in: ^5.2.1
   #  flutter_facebook_auth: ^3.5.7
-  # fwfh_text_style: 2.7.2
+  fwfh_text_style: ^2.22.8+3
   photo_view: ^0.14.0
   dotted_border: ^2.0.0+2
   share_plus: ^4.0.4

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:universal_platform/universal_platform.dart';
 
+import 'country_codes.dart';
+
 class CodePickerWidget extends StatefulWidget {
   final ValueChanged<CountryCode> onChanged;
   final ValueChanged<CountryCode> onInit;
@@ -112,7 +114,7 @@ class CodePickerWidget extends StatefulWidget {
     this.dialogSize,
     this.dialogBackgroundColor,
     this.closeIcon = const Icon(Icons.close),
-    this.countryList = codes,
+    this.countryList = Countrycodes.codes,
     Key key,
   }) : super(key: key);
 
